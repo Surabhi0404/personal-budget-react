@@ -12,6 +12,7 @@ import HomePage from './HomePage/HomePage';
 import Menu from './Menu/Menu';
 import AboutPage from './AboutPage/AboutPage';
 import LoginPage from './LoginPage/LoginPage';
+import ChatJS from './ChartJS/ChartJS';
 
 function App() {
   return (

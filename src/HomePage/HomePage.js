@@ -1,5 +1,5 @@
 import React from 'react';
-
+import ChartJS from '../ChartJS/ChartJS'
 function HomePage() {
   return (
     <main className="center" id="maincontent" role="main">
@@ -71,12 +71,11 @@ function HomePage() {
                 </p>
             </div>
 
-            <div className="text-box">
+            <div>
                 <h1>ChartJS</h1>
-                <p>
-                    <canvas id="myChart" width="400" height="400"></canvas>
-                </p>
+                <ChartJS/>
             </div>
+
 
             <div className="text-box">
                 <h1>ChartD3JS</h1>
