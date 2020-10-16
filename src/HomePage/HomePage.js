@@ -1,20 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import ChartD3J from '../ChartD3J/ChartD3J';
 import ChartJS from '../ChartJS/ChartJS';
-import * as d3 from "d3";
-import axios from "axios";
 
 function HomePage() {
-    const [data, setData] = useState({});
-    useEffect(()=>{
-        const fetchData = async () => {
-            const result = await axios.get(
-                'http://localhost:3000/budget',
-            );
-            setData(result.data.myBudget);
-        };
-        fetchData();
-    }, []);
   return (
     <main className="center" id="maincontent" role="main">
     <div className="container center">
@@ -93,7 +81,6 @@ function HomePage() {
         <div>
         <h1>ChartD3J</h1>
         <ChartD3J
-          data={data}
           innerRadius={0}
           outerRadius={200}
         />

@@ -1,9 +1,21 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import * as d3 from 'd3';
+import axios from "axios";
+
 
 function ChartD3J(props) {
+  const [data, setData] = useState({});
+    useEffect(()=>{
+        const fetchData = async () => {
+            const result = await axios.get(
+                'http://localhost:3000/budget',
+            );
+            setData(result.data.myBudget);
+        };
+        fetchData();
+    }, []);
+
   const {
-    data,
     outerRadius,
     innerRadius,
   } = props;
@@ -22,12 +34,10 @@ function ChartD3J(props) {
   }, [data]);
 
   function drawChart() {
-    // Remove the old svg
     d3.select('#pie-container')
       .select('svg')
       .remove();
 
-    // Create new svg
     const svg = d3
       .select('#pie-container')
       .append('svg')
@@ -51,7 +61,6 @@ function ChartD3J(props) {
       .data(pieGenerator(data))
       .enter();
 
-    // Append arcs
     arc
       .append('path')
       .attr('d', arcGenerator)
@@ -59,7 +68,6 @@ function ChartD3J(props) {
       .style('stroke', '#ffffff')
       .style('stroke-width', 0);
 
-    // Append text labels
     arc
       .append('text')
       .attr('text-anchor', 'middle')
