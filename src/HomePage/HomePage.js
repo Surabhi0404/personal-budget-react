@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import ChartD3J from '../ChartD3J/ChartD3J';
 import ChartJS from '../ChartJS/ChartJS';
 import * as d3 from "d3";
+import axios from "axios";
 
 function HomePage() {
     const generateData = (value, length = 5) =>
