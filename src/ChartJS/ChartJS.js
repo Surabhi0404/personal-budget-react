@@ -3,7 +3,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import {Pie} from 'react-chartjs-2';
 
-function ChatJS() {
+function ChartJS() {
     const [chartData, setChartData] = useState({})
     const [budgetData, setBudgetData] = useState([])
     const [budgetTitle, setBudgetTitle] = useState([])
@@ -53,4 +53,4 @@ function ChatJS() {
   );
 }
 
-export default ChatJS;
+export default ChartJS;

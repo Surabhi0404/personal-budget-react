@@ -1,20 +1,20 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ChartD3J from '../ChartD3J/ChartD3J';
 import ChartJS from '../ChartJS/ChartJS';
 import * as d3 from "d3";
 import axios from "axios";
 
 function HomePage() {
-    const generateData = (value, length = 5) =>
-    d3.range(length).map((item, index) => ({
-      date: index,
-      value: value === null || value === undefined ? Math.random() * 100 : value
-    }));
-
-  const [data, setData] = useState(generateData());
-  const changeData = () => {
-    setData(generateData());
-  };
+    const [data, setData] = useState({});
+    useEffect(()=>{
+        const fetchData = async () => {
+            const result = await axios.get(
+                'http://localhost:3000/budget',
+            );
+            setData(result.data.myBudget);
+        };
+        fetchData();
+    }, []);
   return (
     <main className="center" id="maincontent" role="main">
     <div className="container center">
@@ -89,23 +89,13 @@ function HomePage() {
                 <h1>ChartJS</h1>
                 <ChartJS/>
             </div>
-
-
-            {/* <div className="text-box">
-                <h1>ChartD3JS</h1>
-                <p>
-                    <svg width="400" height="250"> </svg>
-                </p>
-            </div> */}
-
+        <br/><br/>
         <div>
         <h1>ChartD3J</h1>
         <ChartD3J
           data={data}
-          width={400}
-          height={400}
           innerRadius={0}
-          outerRadius={150}
+          outerRadius={200}
         />
       </div>
             

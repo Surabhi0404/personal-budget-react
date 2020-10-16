@@ -1,64 +1,78 @@
-import React, { useEffect, useRef } from "react";
-import * as d3 from "d3";
+import React, { useEffect } from 'react';
+import * as d3 from 'd3';
 
-const ChartD3J = props => {
-  const ref = useRef(null);
-  const createPie = d3
-    .pie()
-    .value(d => d.value)
-    .sort(null);
-  const createArc = d3
-    .arc()
-    .innerRadius(props.innerRadius)
-    .outerRadius(props.outerRadius);
-  const colors = d3.scaleOrdinal(d3.schemeCategory10);
-  const format = d3.format(".2f");
+function ChartD3J(props) {
+  const {
+    data,
+    outerRadius,
+    innerRadius,
+  } = props;
 
-  useEffect(
-    () => {
-      const data = createPie(props.data);
-      const group = d3.select(ref.current);
-      const groupWithData = group.selectAll("g.arc").data(data);
+  const margin = {
+    top: 50, right: 50, bottom: 50, left: 50,
+  };
 
-      groupWithData.exit().remove();
+  const width = 2 * outerRadius + margin.left + margin.right;
+  const height = 2 * outerRadius + margin.top + margin.bottom;
 
-      const groupWithUpdate = groupWithData
-        .enter()
-        .append("g")
-        .attr("class", "arc");
+  const colorScale = d3.scaleOrdinal(['#4daf4a','#377eb8','#ff7f00','#984ea3','#e41a1c', '#A3E4D7', '#F1C40F', '#1B4F72']);
 
-      const path = groupWithUpdate
-        .append("path")
-        .merge(groupWithData.select("path.arc"));
+  useEffect(() => {
+    drawChart();
+  }, [data]);
 
-      path
-        .attr("class", "arc")
-        .attr("d", createArc)
-        .attr("fill", (d, i) => colors(i));
+  function drawChart() {
+    // Remove the old svg
+    d3.select('#pie-container')
+      .select('svg')
+      .remove();
 
-      const text = groupWithUpdate
-        .append("text")
-        .merge(groupWithData.select("text"));
+    // Create new svg
+    const svg = d3
+      .select('#pie-container')
+      .append('svg')
+      .attr('width', width)
+      .attr('height', height)
+      .append('g')
+      .attr('transform', `translate(${width / 2}, ${height / 2})`);
 
-      text
-        .attr("text-anchor", "middle")
-        .attr("alignment-baseline", "middle")
-        .attr("transform", d => `translate(${createArc.centroid(d)})`)
-        .style("fill", "white")
-        .style("font-size", 10)
-        .text(d => format(d.value));
-    },
-    [props.data]
-  );
+    const arcGenerator = d3
+      .arc()
+      .innerRadius(innerRadius)
+      .outerRadius(outerRadius);
 
-  return (
-    <svg width={props.width} height={props.height}>
-      <g
-        ref={ref}
-        transform={`translate(${props.outerRadius} ${props.outerRadius})`}
-      />
-    </svg>
-  );
-};
+    const pieGenerator = d3
+      .pie()
+      .padAngle(0)
+      .value((d) => d.budget);
+
+    const arc = svg
+      .selectAll()
+      .data(pieGenerator(data))
+      .enter();
+
+    // Append arcs
+    arc
+      .append('path')
+      .attr('d', arcGenerator)
+      .style('fill', (_, i) => colorScale(i))
+      .style('stroke', '#ffffff')
+      .style('stroke-width', 0);
+
+    // Append text labels
+    arc
+      .append('text')
+      .attr('text-anchor', 'middle')
+      .attr('alignment-baseline', 'middle')
+      .text((d) => d.data.title)
+      .style('font-size', 12)
+      .attr('transform', (d) => {
+        const [x, y] = arcGenerator.centroid(d);
+        return `translate(${x}, ${y})`;
+      });
+  }    
+
+  return <div id="pie-container" />;
+}
 
 export default ChartD3J;
